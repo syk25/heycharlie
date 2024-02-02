@@ -19,3 +19,6 @@ spring:
     url: jdbc:h2:mem:heycharlie:DB_CLOSE_DELAY=-1
     username: sa
     password:
+
+  jwt:
+    secret: c3lrMjUtc3ByaW5nLWJvb3QtaGV5LWNoYXJsaWUtcHJvamVjdC1qd3Qtc2VjcmV0Cg==
