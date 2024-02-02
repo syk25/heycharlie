@@ -5,6 +5,7 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+import org.springframework.stereotype.Component;
 import syk25.heycharlie.model.Company;
 import syk25.heycharlie.model.Dividend;
 import syk25.heycharlie.model.ScrapedResult;
@@ -14,15 +15,21 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 
-public class YahooFinanceScraper {
+@Component
+public class YahooFinanceScraper implements Scraper{
 
     // URL 정보
 //    private static final String URL = "https://finance.yahoo.com/quote/COKE/history?period1=99100800&period2=1706659200&filter=div&frequency=1mo";
-    private static final String STATISTICS_URL = "https://finance.yahoo.com/quote/%s/history?period1=%d&period2=%d&filter=div&frequency=1mo"; // 티커와 시간 부분 일반화
 
+    // 특정 회사의 배당금 url
+    private static final String STATISTICS_URL = "https://finance.yahoo.com/quote/%s/history?period1=%d&period2=%d&filter=div&frequency=1mo"; // 티커와 시간 부분 일반화
     private static final long START_TIME = 86400;
 
-    // 스크래핑을 하기 위한 메서드
+    // 회사 정보 url - 회사명 추출
+    private static final String SUMMARY_URL = "https://finance.yahoo.com/quote/%s?p=%s";
+
+    // 스크래핑
+    @Override
     public ScrapedResult scrape(Company company) {
         ScrapedResult scrapResult = new ScrapedResult();
         scrapResult.setCompany(company);
@@ -61,7 +68,7 @@ public class YahooFinanceScraper {
                                 .build()
                 );
             }
-            scrapResult.setDividendEntities(dividends);
+            scrapResult.setDividends(dividends);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -69,6 +76,25 @@ public class YahooFinanceScraper {
         return scrapResult;
     }
 
+    // 회사 티커와 이름
+    @Override
+    public Company scrapeCompanyByTicker(String ticker){
+        String url = String.format(SUMMARY_URL,ticker,ticker);
 
+        try{
+            Document document = Jsoup.connect(url).get();
+            Element titleElement = document.getElementsByTag("h1").get(0);
+//            String title = titleElement.text().split("-")[1].trim();
+            String title = titleElement.text();
 
+            return Company.builder()
+                    .ticker(ticker)
+                    .name(title)
+                    .build();
+        } catch (IOException e){
+            e.printStackTrace();
+        }
+
+        return null;
+    }
 }

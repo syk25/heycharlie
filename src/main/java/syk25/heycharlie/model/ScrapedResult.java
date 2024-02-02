@@ -13,10 +13,10 @@ public class ScrapedResult {
     private Company company;
 
     // 배당금 정보
-    private List<Dividend> dividendEntities;
+    private List<Dividend> dividends;
 
     // ScrapedResult 생성자
     public ScrapedResult() {
-        this.dividendEntities = new ArrayList<>();
+        this.dividends = new ArrayList<>();
     }
 }

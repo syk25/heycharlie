@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
+import syk25.heycharlie.model.Company;
 
 @Entity(name = "COMPANY")
 @Getter @Setter @ToString @NoArgsConstructor
@@ -20,4 +21,8 @@ public class CompanyEntity {
     private String name;
 
 
+    public CompanyEntity(Company company) {
+        this.ticker = company.getTicker();
+        this.name = company.getName();
+    }
 }
